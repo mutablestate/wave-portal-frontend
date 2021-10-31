@@ -1,12 +1,16 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@fontsource/fira-mono': ^4.5.0
   '@sveltejs/vite-plugin-svelte': 1.0.0-next.30
+  dayjs: ^1.10.7
   ethers: ^5.5.1
   svelte: ^3.44.0
   vite: ^2.6.13
 
 dependencies:
+  '@fontsource/fira-mono': 4.5.0
+  dayjs: 1.10.7
   ethers: 5.5.1
 
 devDependencies:
@@ -329,6 +333,10 @@ packages:
       '@ethersproject/strings': 5.5.0
     dev: false
 
+  /@fontsource/fira-mono/4.5.0:
+    resolution: {integrity: sha512-KE+d3wmgq/YKM0BqgUF7p2yeBNi805Nfof1lC1wJ7E9i2EWoC363sGdKG+MQBVm+ei3GYZu+Bo8Xha1w1pkB7g==}
+    dev: false
+
   /@rollup/pluginutils/4.1.1:
     resolution: {integrity: sha512-clDjivHqWGXi7u+0d2r2sBi4Ie6VLEAzWMIkvJLnDmxoOhBYOTfzGbOQBA32THHm11/LiJbd01tJUpJsbshSWQ==}
     engines: {node: '>= 8.0.0'}
@@ -374,6 +382,10 @@ packages:
 
   /brorand/1.1.0:
     resolution: {integrity: sha1-EsJe/kCkXjwyPrhnWgoM5XsiNx8=}
+    dev: false
+
+  /dayjs/1.10.7:
+    resolution: {integrity: sha512-P6twpd70BcPK34K26uJ1KT3wlhpuOAPoMwJzpsIWUxHZ7wpmbdZL/hQqBDfz7hGurYSa5PhzdhDHtt319hL3ig==}
     dev: false
 
   /debug/4.3.2:

@@ -4,6 +4,7 @@
 
   import { notifications } from "./notifications";
   import Toast from "./lib/Toast.svelte";
+  import WaveInfo from "./lib/WaveInfo.svelte";
 
   import { normalizeWave, sortByTimestampAsc } from "./utils";
   import { contractEvent } from "./actions/contractEvent";
@@ -15,13 +16,13 @@
   let ethereum = null;
   let wavePortalContract = null;
 
-  let waveMsg = "";
+  let waveMsg = "Be nice!";
 
   async function fetchContract() {
     try {
       const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = provider.getSigner();
-      wavePortalContract = await new ethers.Contract(
+      wavePortalContract = new ethers.Contract(
         contractAddress,
         contractAbi,
         signer
@@ -40,7 +41,7 @@
   async function handleConnectWallet() {
     const accounts = await ethereum.request({ method: "eth_requestAccounts" });
     if (accounts.length) {
-      notifications.success("Account connected!", 3000);
+      notifications.success("Wallet connected!", 3000);
       currentAccount.set(accounts[0]);
     }
   }
@@ -53,7 +54,7 @@
           gasLimit: 300000,
         }
       );
-      notifications.info("Mining your wave...", 9000);
+      notifications.info("Miners at work...", 10000);
 
       await waveTxn.wait();
       notifications.success("Success! Your wave was mined.", 3000);
@@ -81,6 +82,7 @@
 <main>
   <Toast />
   <div class="dataContainer">
+    <div class="header">Say hi 👋 for ETH prizes!</div>
     {#if $currentAccount}
       <div class="connected">
         Connected:
@@ -91,10 +93,19 @@
         >
           {$currentAccount}
         </a>
-        <div>
-          <input id="msg" type="text" class="text-input" bind:value={waveMsg} />
-          <button class="waveButton" on:click={handleWave}>Say hi</button>
-        </div>
+      </div>
+      <div
+        class="grid gap"
+        style="grid-template-columns: 300px minmax(0, 1fr);"
+      >
+        <input
+          id="msg"
+          type="text"
+          class="textInput"
+          bind:value={waveMsg}
+          on:focus={() => (waveMsg = "")}
+        />
+        <button class="waveButton" on:click={handleWave}>Say hi</button>
       </div>
     {:else}
       <div class="unconnected">Connect your Ethereum wallet!</div>
@@ -104,26 +115,20 @@
     {/if}
 
     {#if wavePortalContract}
-      <div class="hall-title">Hall of {$allWavesCount} Waves</div>
       <div use:contractEvent={wavePortalContract}>
-        <ul>
-          {#each $allWaves as wave}
-            <li>
-              <div>{wave.message}</div>
-            </li>
-          {/each}
-        </ul>
+        <div class="hall-title">Hall of Waves</div>
+        <div class="stats">
+          <div>Total: {$allWavesCount}</div>
+        </div>
+        {#each $allWaves as wave, i}
+          <WaveInfo {wave} even={i % 2 === 0} />
+        {/each}
       </div>
     {/if}
   </div>
 </main>
 
 <style>
-  :root {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-  }
-
   main {
     display: flex;
     justify-content: center;
@@ -138,9 +143,60 @@
     max-width: 600px;
   }
 
+  .header {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 600;
+  }
+
+  .textInput {
+    color: gray;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 8px;
+    border-radius: 5px;
+  }
+
+  .waveButton {
+    cursor: pointer;
+    padding: 8px;
+    border: 0;
+    border-radius: 5px;
+    color: white;
+    font-weight: 500;
+    background-color: #ff3e00;
+  }
+  .unconnected {
+    text-align: center;
+    color: gray;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+  .connected {
+    text-align: center;
+    color: gray;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+
+  .grid {
+    display: -ms-grid;
+    display: grid;
+  }
+
+  .gap {
+    grid-gap: 8px;
+    gap: 8px;
+  }
+
+  .stats {
+    text-align: right;
+    color: gray;
+    margin-top: 4px;
+    margin-bottom: 8px;
+  }
   .hall-title {
     padding-top: 48px;
-    padding-bottom: 16px;
     font-size: 20px;
     font-weight: 500;
     color: #004899;
