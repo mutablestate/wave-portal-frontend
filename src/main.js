@@ -2,7 +2,7 @@ import wavePortalAbi from "./contract/WavePortal.json";
 import "./assets/css/app.css";
 import App from "./App.svelte";
 
-const contractAddress = "0x2A8EDBCc8E7b9ea1DceEFe9AACC199df612Aef3D";
+const contractAddress = "0x287a73aDd09fAc71fdb32C05500819f8c4eD46a3";
 const contractAbi = wavePortalAbi.abi;
 
 const app = new App({

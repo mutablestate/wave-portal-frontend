@@ -4,6 +4,7 @@
 
   import { notifications } from "./notifications";
   import Toast from "./lib/Toast.svelte";
+  import Cooldown from "./lib/Cooldown.svelte";
   import WaveInfo from "./lib/WaveInfo.svelte";
 
   import { normalizeWave, sortByTimestampAsc } from "./utils";
@@ -16,6 +17,7 @@
   let ethereum = null;
   let wavePortalContract = null;
 
+  let showCooldown = false;
   let waveMsg = "Be nice!";
 
   async function fetchContract() {
@@ -60,7 +62,7 @@
       notifications.success("Success! Your wave was mined.", 3000);
       waveMsg = "";
     } catch (error) {
-      // showCooldown = true;
+      showCooldown = true;
       notifications.danger("Ooof! Please try again.", 3000);
     }
   }
@@ -94,24 +96,26 @@
           {$currentAccount}
         </a>
       </div>
-      <div
-        class="grid gap"
-        style="grid-template-columns: 300px minmax(0, 1fr);"
-      >
-        <input
-          id="msg"
-          type="text"
-          class="textInput"
-          bind:value={waveMsg}
-          on:focus={() => (waveMsg = "")}
-        />
-        <button class="waveButton" on:click={handleWave}>Say hi</button>
-      </div>
+      {#if showCooldown}
+        <Cooldown on:message={() => (showCooldown = false)} />
+      {:else}
+        <div
+          class="grid gap"
+          style="grid-template-columns: 300px minmax(0, 1fr);"
+        >
+          <input
+            id="msg"
+            type="text"
+            class="textInput"
+            bind:value={waveMsg}
+            on:focus={() => (waveMsg = "")}
+          />
+          <button on:click={handleWave}>Say hi</button>
+        </div>
+      {/if}
     {:else}
       <div class="unconnected">Connect your Ethereum wallet!</div>
-      <button class="waveButton" on:click={handleConnectWallet}>
-        Connect Wallet
-      </button>
+      <button on:click={handleConnectWallet}> Connect Wallet </button>
     {/if}
 
     {#if wavePortalContract}
@@ -120,7 +124,7 @@
         <div class="stats">
           <div>Total: {$allWavesCount}</div>
         </div>
-        {#each $allWaves as wave, i}
+        {#each $allWaves as wave, i (wave.timestamp)}
           <WaveInfo {wave} even={i % 2 === 0} />
         {/each}
       </div>
@@ -157,12 +161,13 @@
     border-radius: 5px;
   }
 
-  .waveButton {
+  button {
     cursor: pointer;
     padding: 8px;
     border: 0;
     border-radius: 5px;
     color: white;
+    font-size: 16px;
     font-weight: 500;
     background-color: #ff3e00;
   }
